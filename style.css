@@ -19,23 +19,21 @@ button {
   color: #000;
   border: none;
   cursor: pointer;
+  margin-bottom: 10px;
 }
-#log {
-  margin-top: 10px;
-  font-size: 14px;
-  color: #888;
-}
-#output_files {
+#output_files, #evolution_json {
   white-space: pre-wrap;
   background: #1a1a1a;
-  margin-top: 20px;
   padding: 10px;
   border: 1px solid #333;
+  margin-bottom: 20px;
 }
-#evolution_json {
-  margin-top: 20px;
+#log_panel {
   background: #111;
   border: 1px solid #0f0;
-  color: #0f0;
   padding: 10px;
+  height: 150px;
+  overflow-y: scroll;
+  font-size: 13px;
+  color: #0f0;
 }
