@@ -32,3 +32,10 @@ button {
   padding: 10px;
   border: 1px solid #333;
 }
+#evolution_json {
+  margin-top: 20px;
+  background: #111;
+  border: 1px solid #0f0;
+  color: #0f0;
+  padding: 10px;
+}
