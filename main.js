@@ -6,6 +6,7 @@ const logPanel = document.getElementById("log_panel");
 const previewBtn = document.getElementById("preview_button");
 const previewFrame = document.getElementById("preview_frame");
 const downloadBtn = document.getElementById("download_button");
+const sendBtn = document.getElementById("sendToCommand");
 
 let generatedFiles = {
   html: "",
@@ -78,4 +79,18 @@ exportBtn.addEventListener("click", () => {
 
   evoDisplay.innerText = JSON.stringify(evolutionJson, null, 2);
   logMsg("進化JSONを生成し、出力完了");
+});
+
+// 新機能：司令官へ送信
+sendBtn.addEventListener("click", () => {
+  const jsonOutput = evoDisplay.innerText;
+  if (!jsonOutput) {
+    alert("送信できる進化JSONがありません。");
+    return;
+  }
+
+  const encoded = encodeURIComponent(jsonOutput);
+  const targetURL = `https://luporav3n.github.io/command-app.index.html?inject=${encoded}`;
+  window.open(targetURL, "_blank");
+  logMsg("司令官へ進化JSONを送信しました");
 });
