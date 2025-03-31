@@ -8,18 +8,19 @@ const injectLink = document.getElementById("inject_link");
 
 let currentData = {};
 
+function updateOutput(data) {
+  outputHTML.innerText = "HTML:\n" + (data.generated?.html || "(なし)");
+  outputCSS.innerText = "CSS:\n" + (data.generated?.css || "(なし)");
+  outputJS.innerText = "JS:\n" + (data.generated?.js || "(なし)");
+}
+
 processBtn.addEventListener("click", () => {
   const text = input.value.trim();
   try {
     const data = JSON.parse(text);
     currentData = data;
-
-    outputHTML.innerText = "HTML:\\n" + (data.generated?.html || "(なし)");
-    outputCSS.innerText = "CSS:\\n" + (data.generated?.css || "(なし)");
-    outputJS.innerText = "JS:\\n" + (data.generated?.js || "(なし)");
-
+    updateOutput(data);
     injectLink.value = "";
-
   } catch (err) {
     outputHTML.innerText = "JSONエラー：" + err.message;
     outputCSS.innerText = "";
@@ -35,4 +36,20 @@ injectBtn.addEventListener("click", () => {
   const encoded = encodeURIComponent(JSON.stringify(currentData));
   const url = "https://luporav3n.github.io/command-app.index.html?inject=" + encoded;
   injectLink.value = url;
+});
+
+// 自動構築受信処理
+window.addEventListener("DOMContentLoaded", () => {
+  const params = new URLSearchParams(window.location.search);
+  const build = params.get("build");
+  if (build) {
+    try {
+      const parsed = JSON.parse(decodeURIComponent(build));
+      input.value = JSON.stringify(parsed, null, 2);
+      currentData = parsed;
+      updateOutput(parsed);
+    } catch (e) {
+      input.value = "// 構築受信エラー: " + e.message;
+    }
+  }
 });
