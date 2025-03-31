@@ -34,6 +34,5 @@ injectBtn.addEventListener("click", () => {
     return;
   }
   const encoded = encodeURIComponent(JSON.stringify(currentData));
-  const url = "https://luporav3n.github.io/command-app.index.html?inject=" + encoded;
-  injectLink.value = url;
+  const url = "https://luporav3n.github.io/Raven-command/?inject=" + encoded;
 });
