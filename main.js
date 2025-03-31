@@ -19,6 +19,14 @@ function generateCommandLink() {
   const html = encodeURIComponent(document.getElementById("html_output").textContent);
   const css = encodeURIComponent(document.getElementById("css_output").textContent);
   const js = encodeURIComponent(document.getElementById("js_output").textContent);
-  const url = `https://luporav3n.github.io/command-app.index.html?inject={"html":"${html}","css":"${css}","js":"${js}"}`;
+  const url = `https://luporav3n.github.io/Raven-command/?inject=${encodeURIComponent(JSON.stringify({html, css, js}))}`;
   document.getElementById("command_link_output").textContent = url;
+}
+
+function sendToCommand() {
+  const html = encodeURIComponent(document.getElementById("html_output").textContent);
+  const css = encodeURIComponent(document.getElementById("css_output").textContent);
+  const js = encodeURIComponent(document.getElementById("js_output").textContent);
+  const url = `https://luporav3n.github.io/Raven-command/?inject=${encodeURIComponent(JSON.stringify({html, css, js}))}`;
+  window.open(url, '_blank');
 }
