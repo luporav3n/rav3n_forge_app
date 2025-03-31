@@ -82,7 +82,7 @@
         <body>
         \${html}
         <script>
-        ${js}
+        ${js.replace(/<\/script>/g, '<\\/script>')}
         </script>
         </body>
         </html>
