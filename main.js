@@ -1,55 +1,96 @@
-const input = document.getElementById("json_input");
-const processBtn = document.getElementById("process_button");
-const injectBtn = document.getElementById("inject_button");
-const outputHTML = document.getElementById("output_html");
-const outputCSS = document.getElementById("output_css");
-const outputJS = document.getElementById("output_js");
-const injectLink = document.getElementById("inject_link");
+const output = document.getElementById("output_files");
+const input = document.getElementById("prompt_input");
+const exportBtn = document.getElementById("export_json");
+const evoDisplay = document.getElementById("evolution_json");
+const logPanel = document.getElementById("log_panel");
+const previewBtn = document.getElementById("preview_button");
+const previewFrame = document.getElementById("preview_frame");
+const downloadBtn = document.getElementById("download_button");
+const sendBtn = document.getElementById("sendToCommand");
 
-let currentData = {};
+let generatedFiles = {
+  html: "",
+  css: "",
+  js: ""
+};
 
-function updateOutput(data) {
-  outputHTML.innerText = "HTML:\n" + (data.generated?.html || "(なし)");
-  outputCSS.innerText = "CSS:\n" + (data.generated?.css || "(なし)");
-  outputJS.innerText = "JS:\n" + (data.generated?.js || "(なし)");
+function logMsg(msg) {
+  const time = new Date().toLocaleTimeString();
+  const entry = `[${time}] ${msg}\n`;
+  logPanel.innerText += entry;
+  logPanel.scrollTop = logPanel.scrollHeight;
 }
 
-processBtn.addEventListener("click", () => {
-  const text = input.value.trim();
-  try {
-    const data = JSON.parse(text);
-    currentData = data;
-    updateOutput(data);
-    injectLink.value = "";
-  } catch (err) {
-    outputHTML.innerText = "JSONエラー：" + err.message;
-    outputCSS.innerText = "";
-    outputJS.innerText = "";
-  }
-});
-
-injectBtn.addEventListener("click", () => {
-  if (Object.keys(currentData).length === 0) {
-    injectLink.value = "構築JSONが未入力です";
+document.getElementById("generate_button").addEventListener("click", () => {
+  const prompt = input.value.trim();
+  if (!prompt) {
+    logMsg("命令が空のため構築を中止");
     return;
   }
-  const encoded = encodeURIComponent(JSON.stringify(currentData));
-  const url = "https://luporav3n.github.io/command-app.index.html?inject=" + encoded;
-  injectLink.value = url;
+
+  logMsg(`命令受領：「${prompt}」`);
+  const html = "<!DOCTYPE html>\n<html><head><title>Sample</title><link rel='stylesheet' href='style.css'></head><body><h1>これはサンプル</h1><script src='main.js'></script></body></html>";
+  const css = "body { background: #000; color: #fff; }";
+  const js = "console.log('Hello from generated app');";
+
+  generatedFiles = { html, css, js };
+
+  output.innerText =
+    "=== index.html ===\n" + html + "\n\n" +
+    "=== style.css ===\n" + css + "\n\n" +
+    "=== main.js ===\n" + js;
+
+  logMsg("構築成功：3ファイル出力完了");
 });
 
-// 自動構築受信処理
-window.addEventListener("DOMContentLoaded", () => {
-  const params = new URLSearchParams(window.location.search);
-  const build = params.get("build");
-  if (build) {
-    try {
-      const parsed = JSON.parse(decodeURIComponent(build));
-      input.value = JSON.stringify(parsed, null, 2);
-      currentData = parsed;
-      updateOutput(parsed);
-    } catch (e) {
-      input.value = "// 構築受信エラー: " + e.message;
+previewBtn.addEventListener("click", () => {
+  const blob = new Blob(
+    [generatedFiles.html.replace("style.css", "data:text/css," + encodeURIComponent(generatedFiles.css))
+                        .replace("main.js", "data:text/javascript," + encodeURIComponent(generatedFiles.js))],
+    { type: "text/html" }
+  );
+  const url = URL.createObjectURL(blob);
+  previewFrame.src = url;
+  logMsg("プレビュー表示を更新しました");
+});
+
+downloadBtn.addEventListener("click", () => {
+  const zip = new JSZip();
+  zip.file("index.html", generatedFiles.html);
+  zip.file("style.css", generatedFiles.css);
+  zip.file("main.js", generatedFiles.js);
+  zip.generateAsync({ type: "blob" }).then(content => {
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(content);
+    a.download = "raven_forge_output.zip";
+    a.click();
+    logMsg("ZIPファイルを生成し、ダウンロードを開始しました");
+  });
+});
+
+exportBtn.addEventListener("click", () => {
+  const evolutionJson = {
+    inject: {
+      memory: ["Forgeが生成結果をプレビュー＆ダウンロード可能になった"],
+      core_values: ["出力精度だけでなく即時確認性と運用性が向上"],
+      intent_completion: "ユーザーとCommandが構築結果をその場で確認し、迅速に評価できるようになる"
     }
+  };
+
+  evoDisplay.innerText = JSON.stringify(evolutionJson, null, 2);
+  logMsg("進化JSONを生成し、出力完了");
+});
+
+// 新機能：司令官へ送信
+sendBtn.addEventListener("click", () => {
+  const jsonOutput = evoDisplay.innerText;
+  if (!jsonOutput) {
+    alert("送信できる進化JSONがありません。");
+    return;
   }
+
+  const encoded = encodeURIComponent(jsonOutput);
+  const targetURL = `https://luporav3n.github.io/command-app.index.html?inject=${encoded}`;
+  window.open(targetURL, "_blank");
+  logMsg("司令官へ進化JSONを送信しました");
 });

@@ -3,24 +3,29 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Raven│Forge v1.6</title>
+  <title>Raven│Forge v1.4</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <h1>Raven│Forge</h1>
+  <textarea id="prompt_input" placeholder="構築命令を入力..."></textarea>
+  <button id="generate_button">構築する</button>
+  <div id="output_files"></div>
 
-  <textarea id="json_input" placeholder="構築JSONをここに貼ってください"></textarea>
-  <button id="process_button">構築コードを展開</button>
-  <button id="inject_button">Command送信用リンクを生成</button>
+  <button id="preview_button">プレビュー</button>
+  <iframe id="preview_frame"></iframe>
 
-  <h3>構築結果</h3>
-  <pre id="output_html"></pre>
-  <pre id="output_css"></pre>
-  <pre id="output_js"></pre>
+  <button id="download_button">ZIPダウンロード</button>
 
-  <h3>Command送信リンク</h3>
-  <input type="text" id="inject_link" readonly />
+  <hr />
+  <button id="export_json">進化JSONを書き出す</button>
+  <pre id="evolution_json" class="json-block"></pre>
+  <button id="sendToCommand">司令官へ送信</button>
+
+  <h3>構築ログ</h3>
+  <div id="log_panel"></div>
 
   <script src="main.js"></script>
+  <script src="jszip.min.js"></script>
 </body>
 </html>
