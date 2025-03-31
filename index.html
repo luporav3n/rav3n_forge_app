@@ -1,12 +1,113 @@
-Raven | Forge v1.8
-構築コードを展開 Command送信用リンクを生成 Commandへ送信 プレビュー表示
-構築結果
-HTML:
-(なし)
-CSS:
-(なし)
-JS:
-(なし)
-Command送信リンク
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Raven | Forge v1.8</title>
+  <style>
+    body {
+      background: #000;
+      color: #0f0;
+      font-family: monospace;
+      padding: 1em;
+    }
+    textarea, pre, input, button {
+      font-family: monospace;
+      background: #111;
+      color: #0f0;
+      border: 1px solid #0f0;
+      width: 100%;
+      margin-bottom: 1em;
+      padding: 0.5em;
+    }
+    button {
+      width: auto;
+      background: #0f0;
+      color: #000;
+      font-weight: bold;
+    }
+    #result, #preview {
+      background: #111;
+      padding: 1em;
+      white-space: pre-wrap;
+      border: 1px solid #0f0;
+      margin-top: 1em;
+    }
+    h1 {
+      color: #0ff;
+    }
+  </style>
+</head>
+<body>
+  <h1>Raven | Forge v1.8</h1>
 
-プレビュー
+  <textarea id="prompt" rows="4" placeholder="構築命令を入力してください"></textarea>
+  <button onclick="generate()">構築コードを展開</button>
+  <button onclick="makeCommandLink()">Command送信用リンクを生成</button>
+  <button onclick="sendToCommand()">Commandへ送信</button>
+
+  <h3>構築結果</h3>
+  <div id="result">
+    <strong>HTML:</strong>
+    <pre id="html"></pre>
+    <strong>CSS:</strong>
+    <pre id="css"></pre>
+    <strong>JS:</strong>
+    <pre id="js"></pre>
+  </div>
+
+  <h3>Command送信リンク</h3>
+  <div>
+    <pre id="command_link"></pre>
+  </div>
+
+  <h3>プレビュー</h3>
+  <iframe id="preview" style="width:100%; height:200px;"></iframe>
+
+  <script>
+    function generate() {
+      const prompt = document.getElementById("prompt").value;
+      const html = `<input type="text" id="msg"><button onclick="send()">送信</button><div id="chat_log"></div>`;
+      const css = `#chat_log { border: 1px solid #0f0; padding: 5px; margin-top: 1em; }`;
+      const js = `function send() {
+  const m = document.getElementById("msg").value;
+  const log = document.getElementById("chat_log");
+  log.innerHTML += "<div>" + m + "</div>";
+}`;
+
+      document.getElementById("html").innerText = html;
+      document.getElementById("css").innerText = css;
+      document.getElementById("js").innerText = js;
+
+      const previewDoc = document.getElementById("preview").contentWindow.document;
+      previewDoc.open();
+      previewDoc.write(\`
+        <html>
+        <style>\${css}</style>
+        <body>
+        \${html}
+        <script>\${js}<\/script>
+        </body>
+        </html>
+      \`);
+      previewDoc.close();
+    }
+
+    function makeCommandLink() {
+      const data = {
+        html: document.getElementById("html").innerText,
+        css: document.getElementById("css").innerText,
+        js: document.getElementById("js").innerText
+      };
+      const encoded = encodeURIComponent(JSON.stringify(data));
+      const url = \`https://luporav3n.github.io/Raven-command/?inject=\${encoded}\`;
+      document.getElementById("command_link").innerText = url;
+    }
+
+    function sendToCommand() {
+      makeCommandLink();
+      const url = document.getElementById("command_link").innerText;
+      window.open(url, "_blank");
+    }
+  </script>
+</body>
+</html>
