@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8" />
-  <title>Raven | Forge v1.8</title>
+  <meta charset="UTF-8">
+  <title>Raven | Forge v1.8 (Fixed)</title>
   <style>
     body {
       background: #000;
@@ -38,7 +38,7 @@
   </style>
 </head>
 <body>
-  <h1>Raven | Forge v1.8</h1>
+  <h1>Raven | Forge v1.8 (Fixed)</h1>
 
   <textarea id="prompt" rows="4" placeholder="構築命令を入力してください"></textarea>
   <button onclick="generate()">構築コードを展開</button>
@@ -66,13 +66,9 @@
   <script>
     function generate() {
       const prompt = document.getElementById("prompt").value;
-      const html = `<input type="text" id="msg"><button onclick="send()">送信</button><div id="chat_log"></div>`;
-      const css = `#chat_log { border: 1px solid #0f0; padding: 5px; margin-top: 1em; }`;
-      const js = `function send() {
-  const m = document.getElementById("msg").value;
-  const log = document.getElementById("chat_log");
-  log.innerHTML += "<div>" + m + "</div>";
-}`;
+      const html = '<input type="text" id="msg"><button onclick="send()">送信</button><div id="chat_log"></div>';
+      const css = '#chat_log { border: 1px solid #0f0; padding: 5px; margin-top: 1em; }';
+      const js = 'function send() { const m = document.getElementById("msg").value; document.getElementById("chat_log").innerHTML += `<div>${m}</div>`; }';
 
       document.getElementById("html").innerText = html;
       document.getElementById("css").innerText = css;
