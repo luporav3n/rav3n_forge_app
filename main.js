@@ -1,38 +1,24 @@
-const input = document.getElementById("json_input");
-const processBtn = document.getElementById("process_button");
-const injectBtn = document.getElementById("inject_button");
-const outputHTML = document.getElementById("output_html");
-const outputCSS = document.getElementById("output_css");
-const outputJS = document.getElementById("output_js");
-const injectLink = document.getElementById("inject_link");
+function processCommand() {
+  const input = document.getElementById("command_input").value;
+  const htmlOut = document.getElementById("html_output");
+  const cssOut = document.getElementById("css_output");
+  const jsOut = document.getElementById("js_output");
 
-let currentData = {};
-
-function updateOutput(data) {
-  outputHTML.innerText = "HTML:\n" + (data.generated?.html || "(なし)");
-  outputCSS.innerText = "CSS:\n" + (data.generated?.css || "(なし)");
-  outputJS.innerText = "JS:\n" + (data.generated?.js || "(なし)");
+  if (/チャット.?UI/.test(input)) {
+    htmlOut.textContent = '<input type="text" id="msg"><button onclick="send()">送信</button><div id="chat_log"></div>';
+    cssOut.textContent = '#chat_log { border: 1px solid #0f0; padding: 5px; margin-top: 10px; }';
+    jsOut.textContent = 'function send() { const m = document.getElementById("msg").value; document.getElementById("chat_log").innerHTML += `<div>${m}</div>`; }';
+  } else {
+    htmlOut.textContent = '(構築不可: 命令を確認)';
+    cssOut.textContent = '(なし)';
+    jsOut.textContent = '(なし)';
+  }
 }
 
-processBtn.addEventListener("click", () => {
-  const text = input.value.trim();
-  try {
-    const data = JSON.parse(text);
-    currentData = data;
-    updateOutput(data);
-    injectLink.value = "";
-  } catch (err) {
-    outputHTML.innerText = "JSONエラー：" + err.message;
-    outputCSS.innerText = "";
-    outputJS.innerText = "";
-  }
-});
-
-injectBtn.addEventListener("click", () => {
-  if (Object.keys(currentData).length === 0) {
-    injectLink.value = "構築JSONが未入力です";
-    return;
-  }
-  const encoded = encodeURIComponent(JSON.stringify(currentData));
-  const url = "https://luporav3n.github.io/Raven-command/?inject=" + encoded;
-});
+function generateCommandLink() {
+  const html = encodeURIComponent(document.getElementById("html_output").textContent);
+  const css = encodeURIComponent(document.getElementById("css_output").textContent);
+  const js = encodeURIComponent(document.getElementById("js_output").textContent);
+  const url = `https://luporav3n.github.io/command-app.index.html?inject={"html":"${html}","css":"${css}","js":"${js}"}`;
+  document.getElementById("command_link_output").textContent = url;
+}
