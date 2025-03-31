@@ -20,7 +20,7 @@ function generateCommandLink() {
   const css = encodeURIComponent(document.getElementById("css_output").textContent);
   const js = encodeURIComponent(document.getElementById("js_output").textContent);
   const url = `https://luporav3n.github.io/Raven-command/?inject=${encodeURIComponent(JSON.stringify({html, css, js}))}`;
-  document.getElementById("command_link_output").textContent = url;
+  document.getElementById("command_link_output").innerHTML = `<a href="${url}" target="_blank">${url}</a>`;
 }
 
 function sendToCommand() {
